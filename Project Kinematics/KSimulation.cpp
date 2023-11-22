@@ -226,6 +226,8 @@ bool KSimulation::Start(float tickLength, float maxSimulationDuration)
 		x.SetTickLength(tickLength);
 	}
 
+	int timestamp_num(0);
+
 	while (currentTick < maxSimulationDuration)
 	{
 		acc_changeflag = 0;
@@ -251,7 +253,8 @@ bool KSimulation::Start(float tickLength, float maxSimulationDuration)
 		}
 
 
-		currentTick += tickLength;
+		++timestamp_num;
+		currentTick = tickLength * static_cast<float>(timestamp_num);
 	}
 
 

@@ -14,6 +14,9 @@ TimelineTimestamp::TimelineTimestamp(float tick, Point loc, Point vel, Point acc
 
 TimelineTimestamp::TimelineTimestamp(TimelineTimestampData data) : data(data)
 {
+	this->data.CalculateAngles();
+	//this->data.vel_angle.Calculate(data.vel);
+	//this->data.acc_angle.Calculate(data.acc);
 }
 
 TimelineTimestampData TimelineTimestamp::GetData() const

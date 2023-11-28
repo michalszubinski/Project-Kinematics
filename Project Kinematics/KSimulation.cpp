@@ -107,7 +107,7 @@ inline bool KSimulation::RemoveObjectAccOrVel(std::vector<UpdatingVector>& arr, 
 	return false;
 }
 
-void KSimulation::FillTickUpdateValues(std::vector<KSimulationUserChangedBool>& arr)
+void KSimulation::FillTickUpdateValues(std::deque<KSimulationUserChangedBool>& arr)
 {
 	KSimulationUserChangedBool temp;
 	float inter(0);
@@ -203,7 +203,7 @@ void KSimulation::PrintEntireTimeline()
 bool KSimulation::Start(float tickLength, float maxSimulationDuration)
 {
 	bool flag_initbadvalue = 0;
-	std::vector<KSimulationUserChangedBool> tickUpdateValues;
+	std::deque<KSimulationUserChangedBool> tickUpdateValues; 
 
 	if (tickLength <= 0 || maxSimulationDuration <= 0) flag_initbadvalue = 1;
 	if (tickLength >= maxSimulationDuration) flag_initbadvalue = 1;
@@ -221,6 +221,7 @@ bool KSimulation::Start(float tickLength, float maxSimulationDuration)
 
 	bool acc_changeflag = 0;
 	bool vel_changeflag = 0;
+	bool any_changeflag = 0;
 
 	for (auto& x : kobjects) {
 		x.SetTickLength(tickLength);
@@ -232,19 +233,23 @@ bool KSimulation::Start(float tickLength, float maxSimulationDuration)
 	{
 		acc_changeflag = 0;
 		vel_changeflag = 0;
+		any_changeflag = 0;
 
 		for (const auto& simEvent : tickUpdateValues) {
 			if (simEvent.tick == currentTick)
 			{
 				if (simEvent.acc) acc_changeflag = 1;
 				if (simEvent.vel) vel_changeflag = 1;
+				any_changeflag = 1;
 			}
 		}
 
 		for (auto& x : kobjects) {
 
-			if(acc_changeflag) CheckForUserDefinedAccORVel(x, accelarationChanges,"acc");
-			if (acc_changeflag) CheckForUserDefinedAccORVel(x, velocityChanges, "vel");
+			if (acc_changeflag) CheckForUserDefinedAccORVel(x, accelarationChanges,"acc");
+			if (vel_changeflag) CheckForUserDefinedAccORVel(x, velocityChanges, "vel");
+			if (any_changeflag) tickUpdateValues.pop_front(); // delete this tickUpdateValue - no longer used
+			// possible bugs if container not sorted (it shouldn't be)
 
 			timeline.AddTimestamp(x.GetName(), TimelineTimestampData(currentTick, x.GetPos(), x.GetVelocityVector(), x.GetAccelarationVector()));
 			// TimelineTimestampData(float tick, Point loc, Point vel, Point acc);

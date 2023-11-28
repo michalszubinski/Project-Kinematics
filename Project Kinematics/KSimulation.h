@@ -34,7 +34,7 @@ public:
 	inline bool AddObjectAccOrVel(std::vector<UpdatingVector>& arr, UpdatingVector obj);
 	inline bool RemoveObjectAccOrVel(std::vector<UpdatingVector>& arr, std::string ctarget, float ctimestamp);
 
-	void FillTickUpdateValues(std::vector<KSimulationUserChangedBool> &arr);
+	void FillTickUpdateValues(std::deque<KSimulationUserChangedBool> &arr);
 	float InterpolateTimestamp(float timestamp);
 	void CheckForUserDefinedAccORVel(KObject& x, const std::vector<UpdatingVector>& updatingVector, std::string type);
 

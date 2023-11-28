@@ -2,6 +2,7 @@
 #include <iostream>
 #include <memory>
 #include <vector>
+#include <deque>
 #include <cmath>
 #include <string>
 #include <algorithm>
